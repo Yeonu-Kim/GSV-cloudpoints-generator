@@ -179,7 +179,7 @@ endpoint = 'https://maps.googleapis.com/maps/api/streetview/metadata'
 
 params = {
     'location': '39.7679158,-86.1580276',
-    'key': 'AIzaSyBHEj9aNtopUTWtjDNG1uJ2T6Qi6rnvWss',
+    'key': 'YOUR_API_KEY',
 }
 
 url = f"https://maps.googleapis.com/maps/api/streetview?size=400x300&location={params['location']}&key={params['key']}"
