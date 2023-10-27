@@ -1,19 +1,34 @@
-from module.DataLoader import panoDataLoader, depthDataLoader
-from module.Preprocessor import stitchPano
-from module.Generator import decodeBase64, makeDepthMap, makeCloudPoints
-from util.Visualization import showPano, showDepth, showCloudPoints
+import os
 
-panoID = "ChIJeRpOeF67j4AR9ydy_PIzPuM" # Configuration 
-APIkey = ""
+# Check path
+path = r"C:\Users\82103\Desktop\GSV-cloudpoints-generator"
+os.chdir(path)
 
-panoTiles = panoDataLoader(panoID, APIkey)
-panoImg = stitchPano(panoTiles)
-showPano(panoImg)
+from module.Generator import createPoints
+from util.Visualize import showHist, showImg, showPts
+from module.DataLoader import loadImg, loadDepth
+from module.DataSaver import savePts, integratePts
 
-base64Depth = depthDataLoader(panoID)
-depthData = decodeBase64(base64Depth)
-depthMap = makeDepthMap(depthData)
-showDepth(depthMap)
+# Configuration
+# 37.281575,127.0017723
+lat = 37.281575
+lon = 127.0017723
+APIkey = "YOUR_API_KEY"
+savePath = r"C:\Users\82103\Desktop\GSV-cloudpoints-generator\output"
 
-cloudPoints = makeCloudPoints(depthData)
-showCloudPoints(cloudPoints)
+# Load GSV images and depthmap
+image, panoID = loadImg(lat, lon, APIkey)
+showImg(image)
+depthMap, header = loadDepth(
+    panoID
+)  # header is the dictionary that show the width and the height of depthmap
+showHist(depthMap)
+showImg(depthMap)
+
+# Create the cloudPoints using depthMap
+# createPoints(header, depthMap, lat, lon, ignoreSphere(optional)=True)
+x, y, z = createPoints(header, depthMap, lat, lon)
+showPts(x, y, z)
+
+# Save the coordinate of the cloudpoints
+savePts(x, y, z, savePath)
