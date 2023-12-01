@@ -161,3 +161,11 @@ cython_debug/
 
 #VSCODE
 .vscode
+
+__pycache__
+*.pyc
+*_disp.jpg
+*_disp.npy
+*.npz
+kitti_data
+models

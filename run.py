@@ -1,34 +1,44 @@
 import os
+import numpy as np
 
 # Check path
-path = r"C:\Users\82103\Desktop\GSV-cloudpoints-generator"
+path = r"/home/ywk0524/GSV-cloudpoints-generator"
 os.chdir(path)
 
-from module.Generator import createPoints
+from module.Generator import createPoints, ignoreSky
+from module.DataLoader import loadImg, loadLocalImg
+from module.DataSaver import savePts
+from monodepth2.test_simple import depthEstimation
 from util.Visualize import showHist, showImg, showPts
-from module.DataLoader import loadImg, loadDepth
-from module.DataSaver import savePts, integratePts
+from skyMask.skyDetection import detectSky
 
 # Configuration
-# 37.281575,127.0017723
-lat = 37.281575
-lon = 127.0017723
+# 127.0316244, 37.2461877
+lat = 37.2461877
+lon = 127.0316244
 APIkey = "YOUR_API_KEY"
-savePath = r"C:\Users\82103\Desktop\GSV-cloudpoints-generator\output"
+savePath = r"/home/ywk0524/GSV-cloudpoints-generator/output"
 
 # Load GSV images and depthmap
 image, panoID = loadImg(lat, lon, APIkey)
 showImg(image)
-depthMap, header = loadDepth(
-    panoID
-)  # header is the dictionary that show the width and the height of depthmap
+depthMap = depthEstimation(image, 'mono+stereo_1024x320')
 showHist(depthMap)
 showImg(depthMap)
 
+# Make mask to remove sky
+mask = detectSky(image)
+showImg(mask)
+depthMap = ignoreSky(depthMap, mask)
+
 # Create the cloudPoints using depthMap
-# createPoints(header, depthMap, lat, lon, ignoreSphere(optional)=True)
-x, y, z = createPoints(header, depthMap, lat, lon)
+x, y, z = createPoints(depthMap, lat, lon) # createPoints(depthMap, lat, lon, ignore = False)
 showPts(x, y, z)
 
 # Save the coordinate of the cloudpoints
-savePts(x, y, z, savePath)
+x = x.reshape(-1, 1)
+y = y.reshape(-1, 1)
+z = z.reshape(-1, 1)
+
+result = np.concatenate((x, y, z), axis=1)
+np.savetxt('./result_output.txt', result)

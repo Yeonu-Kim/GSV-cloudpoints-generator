@@ -10,7 +10,7 @@ def savePts(x, y, z, savePath):
     z = z.reshape(-1, 1)
 
     result = np.concatenate((x, y, z), axis=1)
-    savePath = savePath +r'\result.txt'
+    savePath = savePath +r'/result_point.txt'
     np.savetxt(savePath, result)
 
 def integratePts(savePath):
