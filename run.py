@@ -18,7 +18,7 @@ from skyMask.skyDetection import detectSky
 # 37.2465739,127.0323537
 lat = 37.2465739
 lon = 127.0323537
-APIkey = "AIzaSyAtAmZihoELCkCH-wlYD8JUr_5Ne3Q2pqA"
+APIkey = "YOUR_API_KEY"
 savePath = r"/home/ywk0524/GSV-cloudpoints-generator/output"
 
 # Load GSV images and depthmap
