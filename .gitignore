@@ -169,3 +169,7 @@ __pycache__
 *.npz
 kitti_data
 models
+
+# Ignore datasets
+data_depth_annotated.zip
+asset

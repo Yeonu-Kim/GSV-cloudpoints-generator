@@ -9,18 +9,21 @@ from module.Generator import createPoints, ignoreSky
 from module.DataLoader import loadImg, loadLocalImg
 from module.DataSaver import savePts
 from monodepth2.test_simple import depthEstimation
-from util.Visualize import showHist, showImg, showPts
+from util.Visualize import showHist, showImg, showPts, showColorMap
 from skyMask.skyDetection import detectSky
+# from skyDetector.sky_detector.detector import get_sky_region_gradient
+
 
 # Configuration
-# 127.0316244, 37.2461877
-lat = 37.2461877
-lon = 127.0316244
-APIkey = "YOUR_API_KEY"
+# 37.2465739,127.0323537
+lat = 37.2465739
+lon = 127.0323537
+APIkey = "AIzaSyAtAmZihoELCkCH-wlYD8JUr_5Ne3Q2pqA"
 savePath = r"/home/ywk0524/GSV-cloudpoints-generator/output"
 
 # Load GSV images and depthmap
-image, panoID = loadImg(lat, lon, APIkey)
+image = loadLocalImg(r"/home/ywk0524/GSV-cloudpoints-generator/asset/panorama4.jpg")
+# image, panoID = loadImg(lat, lon, APIkey)
 showImg(image)
 depthMap = depthEstimation(image, 'mono+stereo_1024x320')
 showHist(depthMap)
@@ -30,6 +33,12 @@ showImg(depthMap)
 mask = detectSky(image)
 showImg(mask)
 depthMap = ignoreSky(depthMap, mask)
+np.savetxt('./depthmap_output.txt', depthMap)
+
+# mask = get_sky_region_gradient(image)
+# showImg(mask)
+# depthMap = ignoreSky(depthMap, mask)
+# np.savetxt('./depthmap_output.txt', depthMap)
 
 # Create the cloudPoints using depthMap
 x, y, z = createPoints(depthMap, lat, lon) # createPoints(depthMap, lat, lon, ignore = False)

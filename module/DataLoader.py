@@ -21,7 +21,7 @@ def loadImg(lat, lon, APIkey):
             'key': APIkey,
             'heading': f"{heading}",
         }
-        url = f"https://maps.googleapis.com/maps/api/streetview?size=256x320&location={params['location']}&heading={params['heading']}&key={params['key']}"
+        url = f"https://maps.googleapis.com/maps/api/streetview?size=640x192&location={params['location']}&heading={params['heading']}&key={params['key']}"
 
         payload = {}
         headers = {}
@@ -36,18 +36,14 @@ def loadImg(lat, lon, APIkey):
         panoID = r.json()['pano_id']
 
     # Concatenate 4 images
-    image = np.concatenate((image_container[0], image_container[1], image_container[2], image_container[3]), axis=1)
-
-    print(type(image))
-    print(image.shape)
+    # image = np.concatenate((image_container[0], image_container[1], image_container[2], image_container[3]), axis=1)
+    image = image_container[0]
 
     return image, panoID
 
 def loadLocalImg(path):
-    image = skimage.io.imread(path)
-    image = np.asarray(image)
-
-    print(type(image))
-    print(image.shape)
-
+    imageOriginal = skimage.io.imread(path)
+    image = skimage.transform.resize(imageOriginal, (320, 1024))
+    image = image[:, :, :3]
+    image = skimage.img_as_ubyte(image)
     return image

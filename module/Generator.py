@@ -13,7 +13,7 @@ def getCartesian(lat, lon):
 
 def ignoreSphere(depthMap):
     # depthMap = depthMap[100:220][:]
-    return depthMap*(depthMap<5)
+    return depthMap*(depthMap<8)*(depthMap>5)
 
 def ignoreSky(depthMap, mask):
     _, mask_binary = cv2.threshold(mask, 1, 255, cv2.THRESH_BINARY)
@@ -29,11 +29,11 @@ def createPoints(depthMap, lat, lon, ignore = False):
     plt.show()
 
     ys, xs = depthMap.shape
-   
+    
+    # 360x180 deg   
     phi = 2.0 * np.pi
     theta = 0.5 * np.pi
 
-    # 360x180 deg
     da = phi / xs
     db = theta / ys
     a = np.arange(0, phi, da)
@@ -47,9 +47,9 @@ def createPoints(depthMap, lat, lon, ignore = False):
     yy = depthMap * np.cos(B) * np.sin(A)
     zz = depthMap * np.sin(B)
 
-    xx_new, yy_new, _ = getCartesian(lat, lon)
-    xx += xx_new
-    yy += yy_new
+    # xx_new, yy_new, _ = getCartesian(lat, lon)
+    # xx += xx_new
+    # yy += yy_new
 
     return xx, yy, zz
 
